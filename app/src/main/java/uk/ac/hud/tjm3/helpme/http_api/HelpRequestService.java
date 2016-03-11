@@ -1,5 +1,7 @@
 package uk.ac.hud.tjm3.helpme.http_api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -12,21 +14,21 @@ import uk.ac.hud.tjm3.helpme.HelpRequestList;
 
 public interface HelpRequestService {
     @GET("/help-requests")
-    Call<HelpRequestList> getHelpRequestList();
+    Call<List<HelpRequest>> getHelpRequestList();
 
     @GET("/help-requests")
-    Call<HelpRequestList> getHelpRequestList(
+    Call<List<HelpRequest>> getHelpRequestList(
             @Query("longitude") float longitude,
             @Query("latitude") float latitude);
 
     @GET("/help-requests")
-    Call<HelpRequestList> getHelpRequestList(
+    Call<List<HelpRequest>> getHelpRequestList(
             @Query("longitude") float longitude,
             @Query("latitude") float latitude,
             @Query("radius") int radius);
 
     @POST("/help-requests")
-    Call<HelpRequestList> postHelpRequest();
+    Call<List<HelpRequest>> postHelpRequest();
 
     @GET("/help-requests/{id}")
     Call<HelpRequest> getHelpRequest(
