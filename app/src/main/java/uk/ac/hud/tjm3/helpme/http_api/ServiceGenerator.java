@@ -1,13 +1,20 @@
 package uk.ac.hud.tjm3.helpme.http_api;
 
+import android.util.Base64;
+
+import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * API service generator class
- *
+ * <p/>
  * It generates the basic Retrofit object to use with our API.
  *
  * @author Tomasz Knapik
@@ -25,10 +32,47 @@ public class ServiceGenerator {
 
     /**
      * This method creates an API service for given resource passed in parameter.
+     *
      * @param serviceClass Resource/service interface you want to use with API
+     * @param username user login
+     * @param password user password
      * @return API client of the given resource.
      */
-    public static <S> S createService(Class<S> serviceClass) {
+    public static <S> S createService(Class<S> serviceClass, String username, String password) {
+        // Create a variable to store username
+        String basicAuthorizationHeader = null;
+
+        // If username and password were given as arguments, create a HTTP authorization header
+        if (username != null && password != null) {
+            // Get credentials and encode them
+            basicAuthorizationHeader = "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP);
+        }
+
+        // Set a constant, so the inner classes are able to read it
+        final String BASIC_AUTHORIZATION_HEADER = basicAuthorizationHeader;
+
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                // Get the current request
+                Request originalRequest = chain.request();
+
+                // Add JSON header to our request
+                Request.Builder requestBuilder = originalRequest.newBuilder()
+                        .header("Accept", "application/json")
+                        .method(originalRequest.method(), originalRequest.body());
+
+                // If authorization header exists add authorization header to the HTTP request
+                if (BASIC_AUTHORIZATION_HEADER != null) {
+                    requestBuilder.header("Authorization", BASIC_AUTHORIZATION_HEADER);
+                }
+
+                // Return modified request
+                Request newRequest = requestBuilder.build();
+                return chain.proceed(newRequest);
+            }
+        });
+
         // Set logging level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -38,6 +82,16 @@ public class ServiceGenerator {
         // Create retrofit instance
         Retrofit retrofit = builder.client(httpClient.build()).build();
         return retrofit.create(serviceClass);
+    }
+
+    /**
+     * This is a shorthand to create a service without login credentials.
+     *
+     * @param serviceClass Resource/service interface you want to use with API
+     * @return API client of the given resource.
+     */
+    public static <S> S createService(Class<S> serviceClass) {
+        return createService(serviceClass, null, null);
     }
 
 }
