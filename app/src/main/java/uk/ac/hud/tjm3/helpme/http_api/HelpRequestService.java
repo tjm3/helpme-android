@@ -11,8 +11,16 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import uk.ac.hud.tjm3.helpme.HelpRequest;
 import uk.ac.hud.tjm3.helpme.HelpRequestList;
+import uk.ac.hud.tjm3.helpme.User;
 
 public interface HelpRequestService {
+    @PUT("/users/me")
+    Call<User> updateCurrentUser();
+
+    @GET("/users/{id}")
+    Call<User> getUser(
+      @Path("id") int id);
+
     @GET("/help-requests")
     Call<List<HelpRequest>> getHelpRequestList();
 

@@ -2,6 +2,9 @@ package uk.ac.hud.tjm3.helpme.http_api;
 
 import android.util.Base64;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -14,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * API service generator class
- * <p/>
  * It generates the basic Retrofit object to use with our API.
  *
  * @author Tomasz Knapik
@@ -25,10 +27,14 @@ public class ServiceGenerator {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    private static Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .create();
+
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
+                    .addConverterFactory(GsonConverterFactory.create(gson));
 
     /**
      * This method creates an API service for given resource passed in parameter.
