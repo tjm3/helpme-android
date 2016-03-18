@@ -14,6 +14,9 @@ import uk.ac.hud.tjm3.helpme.HelpRequestList;
 import uk.ac.hud.tjm3.helpme.User;
 
 public interface HelpRequestService {
+    @GET("/users/me")
+    Call<User> getCurrentUser();
+
     @PUT("/users/me")
     Call<User> updateCurrentUser();
 
