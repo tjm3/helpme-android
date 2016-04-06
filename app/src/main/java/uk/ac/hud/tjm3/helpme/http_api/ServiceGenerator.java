@@ -23,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ServiceGenerator {
 
-    public static final String API_BASE_URL = "http://helpme.tmkn8.me/api";
+    public static final String API_BASE_URL = "http://helpme.tmkn8.me/api/";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -71,6 +71,9 @@ public class ServiceGenerator {
                 // If authorization header exists add authorization header to the HTTP request
                 if (BASIC_AUTHORIZATION_HEADER != null) {
                     requestBuilder.header("Authorization", BASIC_AUTHORIZATION_HEADER);
+                    requestBuilder.header("AuthorizationInformation", "Credentials provided");
+                } else {
+                    requestBuilder.header("AuthorizationInformation", "No credentials");
                 }
 
                 // Return modified request

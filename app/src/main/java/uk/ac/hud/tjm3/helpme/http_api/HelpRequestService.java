@@ -14,39 +14,42 @@ import uk.ac.hud.tjm3.helpme.HelpRequestList;
 import uk.ac.hud.tjm3.helpme.User;
 
 public interface HelpRequestService {
-    @PUT("/users/me")
+    @GET("users/me")
+    Call<User> getCurrentUser();
+
+    @PUT("users/me")
     Call<User> updateCurrentUser();
 
-    @GET("/users/{id}")
+    @GET("users/{id}")
     Call<User> getUser(
       @Path("id") int id);
 
-    @GET("/help-requests")
+    @GET("help-requests")
     Call<List<HelpRequest>> getHelpRequestList();
 
-    @GET("/help-requests")
+    @GET("help-requests")
     Call<List<HelpRequest>> getHelpRequestList(
             @Query("longitude") float longitude,
             @Query("latitude") float latitude);
 
-    @GET("/help-requests")
+    @GET("help-requests")
     Call<List<HelpRequest>> getHelpRequestList(
             @Query("longitude") float longitude,
             @Query("latitude") float latitude,
             @Query("radius") int radius);
 
-    @POST("/help-requests")
+    @POST("help-requests")
     Call<List<HelpRequest>> postHelpRequest();
 
-    @GET("/help-requests/{id}")
+    @GET("help-requests/{id}")
     Call<HelpRequest> getHelpRequest(
             @Path("id") int id);
 
-    @DELETE("/help-requests/{id}")
+    @DELETE("help-requests/{id}")
     Call<HelpRequest> deleteHelpRequest(
             @Path("id") int id);
 
-    @PUT("/help-requests/{id}")
+    @PUT("help-requests/{id}")
     Call<HelpRequest> updateHelpRequest(
             @Path("id") int id);
 }
