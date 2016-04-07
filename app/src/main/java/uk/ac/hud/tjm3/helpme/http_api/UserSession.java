@@ -17,6 +17,7 @@ public class UserSession {
     final static String TAG = "USER_SESSION";
     static UserSession instance;
     private HelpRequestService service;
+    private User currentUser;
 
     protected UserSession() {
         this.service = ServiceGenerator.createService(HelpRequestService.class);
@@ -63,7 +64,7 @@ public class UserSession {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccess()) {
-                        throw new InvalidLoginCredentialsRuntimeException();
+                        UserSession.this.currentUser = (User) response.body();
                     }
                 }
 

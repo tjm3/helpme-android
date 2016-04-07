@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class HelpRequestList {
     private int radius;
     private List<HelpRequest> helpRequests;
     private HelpRequestService service;
+    private boolean tempGotData = false;
 
     public HelpRequestList(HelpRequestService service) {
         this.service = service;
@@ -62,31 +64,35 @@ public class HelpRequestList {
     public void reloadData() {
         Log.d(TAG, "reload data initiated");
 
-        Call<List<HelpRequest>> call = this.service.getHelpRequestList(5, 5);
-        call.enqueue(new Callback<List<HelpRequest>>() {
-            @Override
-            public void onResponse(Call<List<HelpRequest>> call, Response<List<HelpRequest>> response) {
-                if(!response.isSuccess()) {
-                    Log.d(TAG, "HTTP request to get a list of help requests failed.");
+        this.helpRequests.clear();
 
-                    // User not logged in
-                    if(response.code() == 401) {
-                        throw new InvalidLoginCredentialsRuntimeException();
+        try {
+            Call<List<HelpRequest>> call = this.service.getHelpRequestList(5, 5);
+            call.enqueue(new Callback<List<HelpRequest>>() {
+                @Override
+                public void onResponse(Call<List<HelpRequest>> call, Response<List<HelpRequest>> response) {
+                    if (!response.isSuccess()) {
+                        throw new RuntimeException("HTTP request to get a list of help requests failed");
                     }
 
-                    throw new RuntimeException("HTTP request to get a list of help requests failed");
+                    for (HelpRequest helpRequest : response.body()) {
+                        HelpRequestList.this.helpRequests.add(helpRequest);
+                    }
+
+                    HelpRequestList.this.tempGotData = true;
                 }
 
-                for(HelpRequest helpRequest : response.body()) {
-                    HelpRequestList.this.helpRequests.add(helpRequest);
-                    Log.d(TAG, helpRequest.toString());
+                @Override
+                public void onFailure(Call<List<HelpRequest>> call, Throwable t) {
+                    throw new RuntimeException();
                 }
-            }
+            });
+        } catch(RuntimeException e) {
+            this.reloadData();
+        }
 
-            @Override
-            public void onFailure(Call<List<HelpRequest>> call, Throwable t) {
-                throw new RuntimeException();
-            }
-        });
+        while(this.tempGotData = false) {
+
+        }
     }
 }

@@ -14,6 +14,7 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import uk.ac.hud.tjm3.helpme.exceptions.InvalidLoginCredentialsRuntimeException;
 
 /**
  * API service generator class
@@ -76,9 +77,18 @@ public class ServiceGenerator {
                     requestBuilder.header("AuthorizationInformation", "No credentials");
                 }
 
-                // Return modified request
+                // Return response
                 Request newRequest = requestBuilder.build();
-                return chain.proceed(newRequest);
+                Response response = chain.proceed(newRequest);
+
+                // If user is logged in, then check if credentials are valid
+                if (BASIC_AUTHORIZATION_HEADER != null) {
+                    if (response.code() == 401) {
+                        throw new InvalidLoginCredentialsRuntimeException();
+                    }
+                }
+
+                return response;
             }
         });
 

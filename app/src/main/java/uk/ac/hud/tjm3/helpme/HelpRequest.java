@@ -1,5 +1,8 @@
 package uk.ac.hud.tjm3.helpme;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,11 +13,17 @@ public class HelpRequest {
     private int id;
     private String title;
     private User author;
-    private String datetime;
+    @SerializedName("author_name")
+    private String authorName;
+    private Date datetime;
+    @SerializedName("location_name")
     private String locationName;
+    @SerializedName("location_latitude")
     private float locationLatitude;
+    @SerializedName("location_longitude")
     private float getLocationLongitude;
     private String content;
+    @SerializedName("is_closed")
     private boolean isClosed;
     private List<HelpRequestReply> helpRequestReplies;
 
@@ -51,11 +60,11 @@ public class HelpRequest {
         this.author = author;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 
@@ -97,5 +106,13 @@ public class HelpRequest {
 
     public void setIsClosed(boolean isClosed) {
         this.isClosed = isClosed;
+    }
+
+    public String toString() {
+        return this.title + " - " + this.authorName + " - " + this.datetime.toString() + " - " + this.locationName;
+    }
+
+    public String getAuthorName() {
+        return authorName;
     }
 }
