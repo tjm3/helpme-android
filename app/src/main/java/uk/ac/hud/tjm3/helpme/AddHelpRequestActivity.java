@@ -121,7 +121,8 @@ public class AddHelpRequestActivity extends AppCompatActivity {
                         // If created...
                         if(response.code() == 201) {
                             Log.d(TAG, "Help request successfuly posted");
-                            AddHelpRequestActivity.this.openMainActivity();
+                            AddHelpRequestActivity.this.newHelpRequest = response.body();
+                            AddHelpRequestActivity.this.openNewHelpRequestActivity();
                         }
                     }
 
@@ -135,11 +136,12 @@ public class AddHelpRequestActivity extends AppCompatActivity {
         });
     }
 
-    private void openMainActivity() {
+    private void openNewHelpRequestActivity() {
         this.handler.post(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(AddHelpRequestActivity.this, HelpRequestListActivity.class);
+                Intent intent = new Intent(AddHelpRequestActivity.this, HelpRequestActivity.class);
+                intent.putExtra(HelpRequestListActivity.EXTRA_HELP_REQUEST_ID, String.valueOf(AddHelpRequestActivity.this.newHelpRequest.getId()));
                 startActivity(intent);
                 finish();
             }

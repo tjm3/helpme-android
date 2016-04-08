@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RunnableFuture;
@@ -116,14 +118,6 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 Log.d(TAG, "Clicked help request :" + helpRequest.toString());
             }
         });
-        this.handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                HelpRequestListActivity.this.refreshHelpRequests();
-            }
-        }, 1200);
-
-
         Log.d(TAG, "onCreate on HelpRequestListActivity finished");
     }
 
@@ -163,8 +157,18 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 HelpRequestListActivity.this.refreshHelpRequests();
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        this.handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HelpRequestListActivity.this.refreshHelpRequests();
+            }
+        }, 1200);
 
     }
 
