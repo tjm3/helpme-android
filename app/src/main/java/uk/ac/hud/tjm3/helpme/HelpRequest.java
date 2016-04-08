@@ -1,6 +1,7 @@
 package uk.ac.hud.tjm3.helpme;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,8 +13,8 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HelpRequest {
-    private int id;
-    private User author;
+    @JsonProperty("id") private int id;
+    @JsonIgnore private User author;
     @JsonProperty("title") private String title;
     @JsonProperty("author_name") private String authorName;
     @JsonProperty("datetime") private Date datetime;
@@ -23,7 +24,7 @@ public class HelpRequest {
     @JsonProperty("location_longitude") private Double getLocationLongitude;
     @JsonProperty("content") private String content;
     @JsonProperty("is_closed") private boolean isClosed;
-    private List<HelpRequestReply> helpRequestReplies;
+    @JsonIgnore private List<HelpRequestReply> helpRequestReplies;
 
 
     public List<HelpRequestReply> getHelpRequestReplies() {
@@ -111,7 +112,7 @@ public class HelpRequest {
     }
 
     public String toString() {
-        return this.title + " - " + this.authorName + " - " + this.datetime.toString() + " - " + this.locationName;
+        return this.title + " - " + this.authorName + " - " + this.meetingDatetime.toString() + " - " + this.locationName;
     }
 
     public String getAuthorName() {

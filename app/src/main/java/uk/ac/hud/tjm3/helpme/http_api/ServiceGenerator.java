@@ -2,6 +2,10 @@ package uk.ac.hud.tjm3.helpme.http_api;
 
 import android.util.Base64;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -25,12 +29,13 @@ public class ServiceGenerator {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+    private static ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
-                    .addConverterFactory(JacksonConverterFactory.create());
+                    .addConverterFactory(JacksonConverterFactory.create(objectMapper));
 
     /**
      * This method creates an API service for given resource passed in parameter.

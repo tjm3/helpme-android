@@ -5,8 +5,6 @@ import android.util.Log;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import uk.ac.hud.tjm3.helpme.HelpRequestList;
 import uk.ac.hud.tjm3.helpme.User;
 import uk.ac.hud.tjm3.helpme.exceptions.InvalidLoginCredentialsRuntimeException;
 

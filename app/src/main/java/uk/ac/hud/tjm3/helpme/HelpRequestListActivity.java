@@ -22,14 +22,20 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import uk.ac.hud.tjm3.helpme.http_api.HelpRequestService;
 import uk.ac.hud.tjm3.helpme.http_api.UserSession;
 
 public class HelpRequestListActivity extends AppCompatActivity {
     public final static String EXTRA_HELP_REQUEST_ID = "uk.ac.hud.tjm3.helpme.HELP_REQUEST_ID";
     final static String TAG = "HELP_RLIST_ACTIVITY";
-    private HelpRequestList helpRequestListManager;
     private ArrayList<String> helpRequestsList = new ArrayList<String>();
+    private List<HelpRequest> rawHelpRequestList = new ArrayList<HelpRequest>();
     private ArrayAdapter<String> helpRequestListAdapter;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -37,6 +43,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
     public static float LOCATION_REFRESH_DISTANCE = 50;
     private Button refreshButton;
     private Handler handler = new Handler();
+    private HelpRequestService service;
 
 
     @Override
@@ -52,11 +59,9 @@ public class HelpRequestListActivity extends AppCompatActivity {
         this.handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                HelpRequestListActivity.this.helpRequestListManager = new HelpRequestList(UserSession.getInstance().getService());
+                HelpRequestListActivity.this.service = UserSession.getInstance().getService();
             }
         }, 1000);
-
-        this.helpRequestListManager = new HelpRequestList(UserSession.getInstance().getService());
 
         // Refresh buton
         this.refreshButton = (Button) findViewById(R.id.refresh_button);
@@ -101,7 +106,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
         helpRequestsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HelpRequest helpRequest = HelpRequestListActivity.this.helpRequestListManager.getHelpRequests().get(position);
+                HelpRequest helpRequest = HelpRequestListActivity.this.rawHelpRequestList.get(position);
                 String helpRequestId = String.valueOf(helpRequest.getId());
                 Log.d(TAG, "Sent ID in intent: " + helpRequestId);
 
@@ -111,8 +116,13 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 Log.d(TAG, "Clicked help request :" + helpRequest.toString());
             }
         });
+        this.handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HelpRequestListActivity.this.refreshHelpRequests();
+            }
+        }, 1200);
 
-        this.refreshHelpRequests();
 
         Log.d(TAG, "onCreate on HelpRequestListActivity finished");
     }
@@ -120,22 +130,39 @@ public class HelpRequestListActivity extends AppCompatActivity {
     private void refreshHelpRequests() {
         Log.d(TAG, "Refresh help requests initiated");
         this.helpRequestsList.clear();
+        this.rawHelpRequestList.clear();
         this.helpRequestListAdapter.notifyDataSetChanged();
-        this.helpRequestListManager.reloadData();
 
-        // Delay filling view with the data, so the request is made properly
-        this.handler.postDelayed(new Runnable() {
+
+        Call<List<HelpRequest>> call = this.service.getHelpRequestList(5, 5);
+        call.enqueue(new Callback<List<HelpRequest>>() {
             @Override
-            public void run() {
+            public void onResponse(Call<List<HelpRequest>> call, Response<List<HelpRequest>> response) {
+                if (!response.isSuccess()) {
+                    HelpRequestListActivity.this.refreshHelpRequests();
+                    return;
+                }
 
-                for (HelpRequest helpRequest : HelpRequestListActivity.this.helpRequestListManager.getHelpRequests()) {
-                    HelpRequestListActivity.this.helpRequestsList.add(helpRequest.toString());
+                HelpRequestListActivity.this.rawHelpRequestList = response.body();
+
+                if (rawHelpRequestList.size() > 0) {
+                    for (HelpRequest helpRequest : rawHelpRequestList) {
+                        HelpRequestListActivity.this.helpRequestsList.add(helpRequest.toString());
+                    }
+                } else {
+                    HelpRequestListActivity.this.helpRequestsList.add("No help requests in the area :(");
                 }
 
                 HelpRequestListActivity.this.helpRequestListAdapter.notifyDataSetChanged();
 
             }
-        }, 2000);
+
+            @Override
+            public void onFailure(Call<List<HelpRequest>> call, Throwable t) {
+                t.printStackTrace();
+                HelpRequestListActivity.this.refreshHelpRequests();
+            }
+        });
 
 
 

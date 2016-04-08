@@ -19,7 +19,7 @@ public class HelpRequestActivity extends AppCompatActivity {
     final static String TAG = "HELP_REQUEST_ACTIVITY";
     private HelpRequestService service;
     private HelpRequest helpRequest;
-    private TextView datetimeTextView, contentTextView, authorTextView, locationTextView;
+    private TextView datetimeTextView, contentTextView, authorTextView, locationTextView, meetingDatetimeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +30,7 @@ public class HelpRequestActivity extends AppCompatActivity {
         this.contentTextView = (TextView) findViewById(R.id.content_textview);
         this.authorTextView = (TextView) findViewById(R.id.author_textview);
         this.locationTextView = (TextView) findViewById(R.id.location_textview);
+        this.meetingDatetimeTextView = (TextView) findViewById(R.id.meeting_datetime_textview);
 
         this.service = UserSession.getInstance().getService();
 
@@ -48,7 +49,8 @@ public class HelpRequestActivity extends AppCompatActivity {
             public void onResponse(Call<HelpRequest> call, Response<HelpRequest> response) {
                 HelpRequestActivity.this.helpRequest = (HelpRequest) response.body();
                 HelpRequestActivity.this.setTitle(HelpRequestActivity.this.helpRequest.getTitle());
-                HelpRequestActivity.this.datetimeTextView.setText("Date: " + HelpRequestActivity.this.helpRequest.getDatetime().toString());
+                HelpRequestActivity.this.datetimeTextView.setText("Posted: " + HelpRequestActivity.this.helpRequest.getDatetime().toString());
+                HelpRequestActivity.this.meetingDatetimeTextView.setText("Meeting time: " + HelpRequestActivity.this.helpRequest.getMeetingDatetime().toString());
                 HelpRequestActivity.this.contentTextView.setText(HelpRequestActivity.this.helpRequest.getContent());
                 HelpRequestActivity.this.authorTextView.setText("Author: " + HelpRequestActivity.this.helpRequest.getAuthorName());
                 HelpRequestActivity.this.locationTextView.setText("Location: " + HelpRequestActivity.this.helpRequest.getLocationName());
