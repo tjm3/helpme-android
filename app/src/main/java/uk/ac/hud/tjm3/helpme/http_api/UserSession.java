@@ -46,6 +46,7 @@ public class UserSession {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
                 throw new RuntimeException("No connection to the network or our server is not responding.");
             }
         });

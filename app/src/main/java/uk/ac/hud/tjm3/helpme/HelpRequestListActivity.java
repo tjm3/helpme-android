@@ -83,9 +83,15 @@ public class HelpRequestListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                // TODO(tmkn8): open create view
+                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+                HelpRequestListActivity.this.handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(HelpRequestListActivity.this, AddHelpRequestActivity.class);
+                        startActivity(intent);
+                    }
+                });
             }
         });
 

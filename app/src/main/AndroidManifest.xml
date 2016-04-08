@@ -30,7 +30,8 @@
             android:name=".HelpRequestListActivity"
             android:label="@string/title_activity_help_request_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".HelpRequestActivity"></activity>
+        <activity android:name=".HelpRequestActivity" />
+        <activity android:name=".AddHelpRequestActivity" android:label="@string/add_help_request"></activity>
     </application>
 
 </manifest>

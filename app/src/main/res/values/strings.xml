@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelpMe</string>
+    <string name="app_name">helpme</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -14,5 +14,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_help_request_list">HelpRequestListActivity</string>
+    <string name="title_activity_help_request_list">helpme requests</string>
+    <string name="add_help_request">Create help request</string>
 </resources>

@@ -1,8 +1,11 @@
 package uk.ac.hud.tjm3.helpme;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by tmkn8 on 26/02/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
     private int id;
     private String username;

@@ -2,9 +2,6 @@ package uk.ac.hud.tjm3.helpme.http_api;
 
 import android.util.Base64;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -13,7 +10,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 import uk.ac.hud.tjm3.helpme.exceptions.InvalidLoginCredentialsRuntimeException;
 
 /**
@@ -28,14 +25,12 @@ public class ServiceGenerator {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-    private static Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-            .create();
+
 
     private static Retrofit.Builder builder =
             new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson));
+                    .addConverterFactory(JacksonConverterFactory.create());
 
     /**
      * This method creates an API service for given resource passed in parameter.

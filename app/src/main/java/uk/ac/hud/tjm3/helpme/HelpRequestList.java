@@ -84,7 +84,7 @@ public class HelpRequestList {
 
                 @Override
                 public void onFailure(Call<List<HelpRequest>> call, Throwable t) {
-                    throw new RuntimeException();
+                    t.printStackTrace();
                 }
             });
         } catch(RuntimeException e) {
@@ -94,5 +94,7 @@ public class HelpRequestList {
         while(this.tempGotData = false) {
 
         }
+
+        this.tempGotData = false;
     }
 }

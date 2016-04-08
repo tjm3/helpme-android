@@ -1,6 +1,8 @@
 package uk.ac.hud.tjm3.helpme;
 
-import com.google.gson.annotations.SerializedName;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 import java.util.List;
@@ -8,23 +10,19 @@ import java.util.List;
 /**
  * Created by tmkn8 on 26/02/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class HelpRequest {
-
     private int id;
-    private String title;
     private User author;
-    @SerializedName("author_name")
-    private String authorName;
-    private Date datetime;
-    @SerializedName("location_name")
-    private String locationName;
-    @SerializedName("location_latitude")
-    private float locationLatitude;
-    @SerializedName("location_longitude")
-    private float getLocationLongitude;
-    private String content;
-    @SerializedName("is_closed")
-    private boolean isClosed;
+    @JsonProperty("title") private String title;
+    @JsonProperty("author_name") private String authorName;
+    @JsonProperty("datetime") private Date datetime;
+    @JsonProperty("meeting_datetime") private Date meetingDatetime;
+    @JsonProperty("location_name") private String locationName;
+    @JsonProperty("location_latitude") private Double locationLatitude;
+    @JsonProperty("location_longitude") private Double getLocationLongitude;
+    @JsonProperty("content") private String content;
+    @JsonProperty("is_closed") private boolean isClosed;
     private List<HelpRequestReply> helpRequestReplies;
 
 
@@ -64,8 +62,12 @@ public class HelpRequest {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
+    public Date getMeetingDatetime() {
+        return meetingDatetime;
+    }
+
+    public void setMeetingDatetime(Date meetingDatetime) {
+        this.meetingDatetime = meetingDatetime;
     }
 
     public String getLocationName() {
@@ -76,19 +78,19 @@ public class HelpRequest {
         this.locationName = locationName;
     }
 
-    public float getLocationLatitude() {
+    public Double getLocationLatitude() {
         return locationLatitude;
     }
 
-    public void setLocationLatitude(float locationLatitude) {
+    public void setLocationLatitude(Double locationLatitude) {
         this.locationLatitude = locationLatitude;
     }
 
-    public float getGetLocationLongitude() {
+    public Double getGetLocationLongitude() {
         return getLocationLongitude;
     }
 
-    public void setGetLocationLongitude(float getLocationLongitude) {
+    public void setGetLocationLongitude(Double getLocationLongitude) {
         this.getLocationLongitude = getLocationLongitude;
     }
 
