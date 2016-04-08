@@ -22,7 +22,7 @@ public class UserSession {
     }
 
     public static UserSession getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UserSession();
         }
 
@@ -40,6 +40,8 @@ public class UserSession {
                 }
 
                 UserSession.this.service = helpRequestService;
+                UserSession.this.currentUser = response.body();
+                Log.d(TAG, "Logged in as: " + UserSession.this.currentUser.toString() + " - " + UserSession.this.currentUser.getUsername() + " - " + UserSession.this.currentUser.getEmail());
             }
 
             @Override
@@ -48,8 +50,6 @@ public class UserSession {
                 throw new RuntimeException("No connection to the network or our server is not responding.");
             }
         });
-
-        Log.d(TAG, "service hash: " + this.service.hashCode());
 
         return this.service;
     }
@@ -63,7 +63,7 @@ public class UserSession {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.isSuccess()) {
-                        UserSession.this.currentUser = (User) response.body();
+                        UserSession.this.currentUser = response.body();
                     }
                 }
 
@@ -72,7 +72,7 @@ public class UserSession {
                     throw new RuntimeException("No connection to the network or our server is not responding.");
                 }
             });
-        } catch(InvalidLoginCredentialsRuntimeException e) {
+        } catch (InvalidLoginCredentialsRuntimeException e) {
             return false;
         }
 
@@ -81,5 +81,9 @@ public class UserSession {
 
     public HelpRequestService getService() {
         return service;
+    }
+
+    public User getCurrentUser() {
+        return this.currentUser;
     }
 }
