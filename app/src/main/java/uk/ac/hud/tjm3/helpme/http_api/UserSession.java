@@ -1,10 +1,12 @@
 package uk.ac.hud.tjm3.helpme.http_api;
 
+import android.content.Intent;
 import android.util.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import uk.ac.hud.tjm3.helpme.LoginActivity;
 import uk.ac.hud.tjm3.helpme.User;
 import uk.ac.hud.tjm3.helpme.exceptions.InvalidLoginCredentialsRuntimeException;
 
@@ -85,5 +87,10 @@ public class UserSession {
 
     public User getCurrentUser() {
         return this.currentUser;
+    }
+
+    public void logout() {
+        this.currentUser = null;
+        this.service = ServiceGenerator.createService(HelpRequestService.class);
     }
 }
