@@ -31,24 +31,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Date not choosen"/>
-    <Button
-        android:id="@+id/choose_date_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose date"/>
+        <Button
+            android:id="@+id/choose_date_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose date"/>
     </LinearLayout>
-    <EditText
-        android:id="@+id/location_edittext"
+    <LinearLayout
+        android:id="@+id/location_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/datetime_linearlayout"
-        android:hint="Location"/>
+        android:layout_below="@id/datetime_linearlayout">
+        <TextView
+            android:id="@+id/location_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Location not chosen" />
+        <Button
+            android:id="@+id/change_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change location" />
+    </LinearLayout>
     <EditText
         android:id="@+id/content_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Content"
-        android:layout_below="@id/location_edittext"/>
+        android:layout_below="@id/location_linearlayout"/>
     <Button
         android:id="@+id/create_button"
         android:layout_width="match_parent"

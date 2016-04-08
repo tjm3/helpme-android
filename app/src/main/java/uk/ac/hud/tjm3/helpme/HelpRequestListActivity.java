@@ -138,9 +138,11 @@ public class HelpRequestListActivity extends AppCompatActivity {
         this.locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.d(TAG, "Location changed: " + location.toString());
-                HelpRequestListActivity.this.currentLocation = location;
-                HelpRequestListActivity.this.refreshHelpRequests();
+                if(location != null) {
+                    Log.d(TAG, "Location changed: " + location.toString());
+                    HelpRequestListActivity.this.currentLocation = location;
+                    HelpRequestListActivity.this.refreshHelpRequests();
+                }
             }
 
             @Override

@@ -32,6 +32,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".HelpRequestActivity" />
         <activity android:name=".AddHelpRequestActivity" android:label="@string/add_help_request"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA3N2pm8cFf56P9CSdrkyiapWTJYuW_NSY" />
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
-
 </manifest>

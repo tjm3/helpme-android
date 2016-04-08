@@ -87,11 +87,11 @@ public class HelpRequest {
         this.locationLatitude = locationLatitude;
     }
 
-    public Double getGetLocationLongitude() {
+    public Double getLocationLongitude() {
         return getLocationLongitude;
     }
 
-    public void setGetLocationLongitude(Double getLocationLongitude) {
+    public void setLocationLongitude(Double getLocationLongitude) {
         this.getLocationLongitude = getLocationLongitude;
     }
 
