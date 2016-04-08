@@ -20,8 +20,8 @@ public class HelpRequest {
     @JsonProperty("datetime") private Date datetime;
     @JsonProperty("meeting_datetime") private Date meetingDatetime;
     @JsonProperty("location_name") private String locationName;
-    @JsonProperty("location_latitude") private Double locationLatitude;
-    @JsonProperty("location_longitude") private Double getLocationLongitude;
+    @JsonProperty("location_lat") private Double locationLatitude;
+    @JsonProperty("location_lon") private Double getLocationLongitude;
     @JsonProperty("content") private String content;
     @JsonProperty("is_closed") private boolean isClosed;
     @JsonIgnore private List<HelpRequestReply> helpRequestReplies;

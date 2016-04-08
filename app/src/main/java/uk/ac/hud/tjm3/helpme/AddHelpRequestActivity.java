@@ -201,9 +201,11 @@ public class AddHelpRequestActivity extends AppCompatActivity implements GoogleA
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
-                AddHelpRequestActivity.this.locationNameTextView.setText(place.getName());
+                AddHelpRequestActivity.this.locationNameTextView.setText(place.getName() + "\n" + place.getAddress() + "\n");
                 AddHelpRequestActivity.this.newHelpRequest.setLocationName(place.getName().toString());
-
+                AddHelpRequestActivity.this.newHelpRequest.setLocationLongitude(place.getLatLng().longitude);
+                AddHelpRequestActivity.this.newHelpRequest.setLocationLatitude(place.getLatLng().latitude);
+                Log.d(TAG, "Set place: " + place.getName() + " " + place.getLatLng().longitude + " " + place.getLatLng().latitude);
             }
         }
     }
