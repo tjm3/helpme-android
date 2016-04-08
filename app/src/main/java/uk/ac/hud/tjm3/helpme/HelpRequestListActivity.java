@@ -4,11 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +25,7 @@ import android.widget.ListView;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RunnableFuture;
@@ -41,17 +44,21 @@ public class HelpRequestListActivity extends AppCompatActivity {
     private ArrayAdapter<String> helpRequestListAdapter;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private Location currentLocation;
     public static long LOCATION_REFRESH_TIME = 20000;
     public static float LOCATION_REFRESH_DISTANCE = 50;
     private Button refreshButton;
     private Handler handler = new Handler();
     private HelpRequestService service;
+    private String provider;
+    final int MY_PERMISSIONS_REQUEST_GPS = 143;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "HelpRequestListActivity onCreate inititated");
+
         setContentView(R.layout.activity_help_request_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,8 +97,6 @@ public class HelpRequestListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
                 HelpRequestListActivity.this.handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -118,6 +123,54 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 Log.d(TAG, "Clicked help request :" + helpRequest.toString());
             }
         });
+
+
+        // Set up GPS
+        this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        this.provider = LocationManager.GPS_PROVIDER;
+        boolean enabled = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!enabled) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
+
+        this.locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d(TAG, "Location changed: " + location.toString());
+                HelpRequestListActivity.this.currentLocation = location;
+                HelpRequestListActivity.this.refreshHelpRequests();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                Log.d(TAG, "Location provider enabled");
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Log.d(TAG, "Location provider disabled");
+            }
+        };
+
+        this.handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (ActivityCompat.checkSelfPermission(HelpRequestListActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(HelpRequestListActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(HelpRequestListActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_GPS);
+                }
+                HelpRequestListActivity.this.currentLocation = HelpRequestListActivity.this.locationManager.getLastKnownLocation(HelpRequestListActivity.this.provider);
+                HelpRequestListActivity.this.locationListener.onLocationChanged(HelpRequestListActivity.this.currentLocation);
+                HelpRequestListActivity.this.locationManager.requestLocationUpdates(HelpRequestListActivity.this.provider, 0, 0, HelpRequestListActivity.this.locationListener);
+            }
+        }, 1000);
+
+
         Log.d(TAG, "onCreate on HelpRequestListActivity finished");
     }
 
@@ -128,7 +181,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
         this.helpRequestListAdapter.notifyDataSetChanged();
 
 
-        Call<List<HelpRequest>> call = this.service.getHelpRequestList(5, 5);
+        Call<List<HelpRequest>> call = this.service.getHelpRequestList(this.currentLocation.getLongitude(), this.currentLocation.getLatitude());
         call.enqueue(new Callback<List<HelpRequest>>() {
             @Override
             public void onResponse(Call<List<HelpRequest>> call, Response<List<HelpRequest>> response) {
@@ -148,7 +201,6 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 }
 
                 HelpRequestListActivity.this.helpRequestListAdapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -166,7 +218,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
         this.handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                HelpRequestListActivity.this.refreshHelpRequests();
+//                HelpRequestListActivity.this.refreshHelpRequests();
             }
         }, 1200);
 

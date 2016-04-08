@@ -29,13 +29,13 @@ public interface HelpRequestService {
 
     @GET("help-requests/")
     Call<List<HelpRequest>> getHelpRequestList(
-            @Query("longitude") float longitude,
-            @Query("latitude") float latitude);
+            @Query("user_longitude") double longitude,
+            @Query("user_latitude") double latitude);
 
     @GET("help-requests/")
     Call<List<HelpRequest>> getHelpRequestList(
-            @Query("longitude") float longitude,
-            @Query("latitude") float latitude,
+            @Query("user_longitude") float longitude,
+            @Query("user_latitude") float latitude,
             @Query("radius") int radius);
 
     @POST("help-requests/")

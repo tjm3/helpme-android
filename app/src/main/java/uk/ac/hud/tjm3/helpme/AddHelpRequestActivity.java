@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,6 +41,7 @@ public class AddHelpRequestActivity extends AppCompatActivity {
     private HelpRequest newHelpRequest;
     private HelpRequestService service;
     private Handler handler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
