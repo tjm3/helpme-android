@@ -10,16 +10,16 @@
     android:background="#d1b9f7"
     tools:context="uk.ac.hud.tjm3.helpme.Splash">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="HELP ME!!!"
-        android:id="@+id/txtLogo"
+        android:src="@mipmap/helpmeapp"
+        android:layout_marginTop="172dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        android:layout_marginTop="172dp" />
+        android:id="@+id/txtLogo"
+        />
+
 
     <TextView
         android:layout_width="wrap_content"
