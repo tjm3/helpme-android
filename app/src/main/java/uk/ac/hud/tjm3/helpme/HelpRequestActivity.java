@@ -30,7 +30,7 @@ public class HelpRequestActivity extends AppCompatActivity {
     private HelpRequestService service;
     private HelpRequest helpRequest;
     private TextView datetimeTextView, contentTextView, authorTextView, locationTextView, meetingDatetimeTextView, closeStatusTextView;
-    private Button closeButton, replyButton;
+    private Button closeButton, replyButton, refreshButton;
     private EditText replyEditText;
     private ListView repliesListView;
     private ArrayAdapter<String> repliesArrayAdapter;
@@ -53,6 +53,7 @@ public class HelpRequestActivity extends AppCompatActivity {
         this.repliesListView = (ListView) findViewById(R.id.help_requests_replies_list_view);
         this.replyButton = (Button) findViewById(R.id.send_reply_button);
         this.replyEditText = (EditText) findViewById(R.id.reply_edit_text);
+        this.refreshButton = (Button) findViewById(R.id.refresh_button);
 
         this.repliesList = new ArrayList<String>();
         this.repliesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, this.repliesList);
@@ -121,6 +122,14 @@ public class HelpRequestActivity extends AppCompatActivity {
 
             }
         });
+
+        this.refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HelpRequestActivity.this.refreshButton.setClickable(false);
+                HelpRequestActivity.this.loadHelpRequest();
+            }
+        });
     }
 
     private void loadHelpRequest() {
@@ -159,6 +168,13 @@ public class HelpRequestActivity extends AppCompatActivity {
                 }
 
                 HelpRequestActivity.this.loadHelpRequestReplies();
+
+                HelpRequestActivity.this.handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        HelpRequestActivity.this.refreshButton.setClickable(true);
+                    }
+                }, 3000);
             }
 
             @Override
