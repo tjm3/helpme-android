@@ -8,13 +8,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HelpRequestActivity">
+    <Button
+        android:id="@+id/refresh_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Refresh" />
     <TextView
         android:id="@+id/close_status_textview"
         android:textColor="#FF0000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="The help request has been closed."
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@id/refresh_button"/>
     <TextView
         android:id="@+id/datetime_textview"
         android:layout_width="match_parent"
