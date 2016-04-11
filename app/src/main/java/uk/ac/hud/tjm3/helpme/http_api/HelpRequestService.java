@@ -11,6 +11,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import uk.ac.hud.tjm3.helpme.HelpRequest;
+import uk.ac.hud.tjm3.helpme.HelpRequestReply;
 import uk.ac.hud.tjm3.helpme.User;
 
 public interface HelpRequestService {
@@ -52,4 +53,7 @@ public interface HelpRequestService {
     @PUT("help-requests/{id}/")
     Call<HelpRequest> updateHelpRequest(
             @Path("id") int id, @Body HelpRequest helpRequest);
+
+    @POST("help-request-replies/")
+    Call<HelpRequestReply> sendHelpRequestReply(@Body HelpRequestReply helpRequestReply);
 }

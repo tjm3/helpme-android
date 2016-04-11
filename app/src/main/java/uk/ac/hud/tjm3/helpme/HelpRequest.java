@@ -24,7 +24,7 @@ public class HelpRequest {
     @JsonProperty("location_lon") private Double getLocationLongitude;
     @JsonProperty("content") private String content;
     @JsonProperty("is_closed") private boolean isClosed;
-    @JsonIgnore private List<HelpRequestReply> helpRequestReplies;
+    @JsonProperty("help_request_replies") private List<HelpRequestReply> helpRequestReplies;
 
 
     public List<HelpRequestReply> getHelpRequestReplies() {

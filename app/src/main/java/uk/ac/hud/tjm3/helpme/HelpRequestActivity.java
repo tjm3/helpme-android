@@ -1,14 +1,22 @@
 package uk.ac.hud.tjm3.helpme;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +30,12 @@ public class HelpRequestActivity extends AppCompatActivity {
     private HelpRequestService service;
     private HelpRequest helpRequest;
     private TextView datetimeTextView, contentTextView, authorTextView, locationTextView, meetingDatetimeTextView, closeStatusTextView;
-    private Button closeButton;
+    private Button closeButton, replyButton;
+    private EditText replyEditText;
+    private ListView repliesListView;
+    private ArrayAdapter<String> repliesArrayAdapter;
+    private List<String> repliesList;
+    private Handler handler = new Handler();
     private int helpRequestId;
 
     @Override
@@ -37,6 +50,13 @@ public class HelpRequestActivity extends AppCompatActivity {
         this.meetingDatetimeTextView = (TextView) findViewById(R.id.meeting_datetime_textview);
         this.closeStatusTextView = (TextView) findViewById(R.id.close_status_textview);
         this.closeButton = (Button) findViewById(R.id.close_button);
+        this.repliesListView = (ListView) findViewById(R.id.help_requests_replies_list_view);
+        this.replyButton = (Button) findViewById(R.id.send_reply_button);
+        this.replyEditText = (EditText) findViewById(R.id.reply_edit_text);
+
+        this.repliesList = new ArrayList<String>();
+        this.repliesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, this.repliesList);
+        this.repliesListView.setAdapter(this.repliesArrayAdapter);
 
         this.service = UserSession.getInstance().getService();
 
@@ -58,6 +78,44 @@ public class HelpRequestActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<HelpRequest> call, Throwable t) {
 
+                    }
+                });
+
+            }
+        });
+
+        this.replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HelpRequestActivity.this.replyButton.setClickable(false);
+                HelpRequestReply reply = new HelpRequestReply();
+
+                reply.setContent(HelpRequestActivity.this.replyEditText.getText().toString());
+                HelpRequestActivity.this.replyEditText.setText("");
+                reply.setHelpRequestId(HelpRequestActivity.this.helpRequest.getId());
+
+                Call<HelpRequestReply> call = HelpRequestActivity.this.service.sendHelpRequestReply(reply);
+                call.enqueue(new Callback<HelpRequestReply>() {
+                    @Override
+                    public void onResponse(Call<HelpRequestReply> call, Response<HelpRequestReply> response) {
+                        if(!response.isSuccess()) {
+                            Log.d(TAG, "replying to help request wasn't succesful");
+
+                        } else {
+                            HelpRequestActivity.this.loadHelpRequest();
+                        }
+
+                        HelpRequestActivity.this.handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                HelpRequestActivity.this.replyButton.setClickable(true);
+                            }
+                        }, 2000);
+                    }
+
+                    @Override
+                    public void onFailure(Call<HelpRequestReply> call, Throwable t) {
+                        t.printStackTrace();
                     }
                 });
 
@@ -99,6 +157,8 @@ public class HelpRequestActivity extends AppCompatActivity {
                 } else {
                     HelpRequestActivity.this.closeStatusTextView.setVisibility(View.GONE);
                 }
+
+                HelpRequestActivity.this.loadHelpRequestReplies();
             }
 
             @Override
@@ -107,6 +167,27 @@ public class HelpRequestActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadHelpRequestReplies() {
+        Log.d(TAG, "Load help request replies");
+
+        this.repliesList.clear();
+
+        List<HelpRequestReply> replies = this.helpRequest.getHelpRequestReplies();
+
+        if(replies.size() > 0) {
+            Log.d(TAG, "There're replies");
+            for (HelpRequestReply reply : replies) {
+                Log.d(TAG, "Reply: " + reply.getContent());
+                this.repliesList.add(reply.getAuthorName() + "\n" + reply.getContent() + "\n" + reply.getDatetime().toString());
+            }
+        } else {
+            Log.d(TAG, "There's no replies");
+            this.repliesList.add("No replies to this help request.");
+        }
+
+        this.repliesArrayAdapter.notifyDataSetChanged();
     }
 
     private boolean isOwner() {

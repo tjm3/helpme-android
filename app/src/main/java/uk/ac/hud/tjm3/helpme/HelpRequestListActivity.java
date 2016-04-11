@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.RunnableFuture;
 
@@ -47,6 +48,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
     private Location currentLocation;
     public static long LOCATION_REFRESH_TIME = 20000;
     public static float LOCATION_REFRESH_DISTANCE = 50;
+    private Date nextUpdate = new Date();
     private Button refreshButton;
     private Handler handler = new Handler();
     private HelpRequestService service;
@@ -138,10 +140,15 @@ public class HelpRequestListActivity extends AppCompatActivity {
         this.locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                if(location != null) {
-                    Log.d(TAG, "Location changed: " + location.toString());
-                    HelpRequestListActivity.this.currentLocation = location;
-                    HelpRequestListActivity.this.refreshHelpRequests();
+                Date now = new Date();
+                if(now.after(nextUpdate)) {
+                    if (location != null) {
+                        Log.d(TAG, "Location changed: " + location.toString());
+                        HelpRequestListActivity.this.currentLocation = location;
+                        HelpRequestListActivity.this.refreshHelpRequests();
+                    }
+
+                    nextUpdate.setSeconds(nextUpdate.getSeconds() + 20);
                 }
             }
 
@@ -168,7 +175,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
                 }
                 HelpRequestListActivity.this.currentLocation = HelpRequestListActivity.this.locationManager.getLastKnownLocation(HelpRequestListActivity.this.provider);
                 HelpRequestListActivity.this.locationListener.onLocationChanged(HelpRequestListActivity.this.currentLocation);
-                HelpRequestListActivity.this.locationManager.requestLocationUpdates(HelpRequestListActivity.this.provider, 0, 0, HelpRequestListActivity.this.locationListener);
+                HelpRequestListActivity.this.locationManager.requestLocationUpdates(HelpRequestListActivity.this.provider, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, HelpRequestListActivity.this.locationListener);
             }
         }, 1000);
 

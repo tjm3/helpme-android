@@ -52,4 +52,27 @@
         android:text="Close request (mark as helped)"
         android:layout_alignParentBottom="true"
         android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/reply_input_linear_layout"
+        android:layout_below="@id/content_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/reply_edit_text"
+            android:hint="Send a reply..."
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/send_reply_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send"/>
+    </LinearLayout>
+    <ListView
+        android:id="@+id/help_requests_replies_list_view"
+        android:layout_width="match_parent"
+        android:layout_below="@id/reply_input_linear_layout"
+        android:layout_above="@id/close_button"
+        android:layout_height="wrap_content"></ListView>
 </RelativeLayout>
