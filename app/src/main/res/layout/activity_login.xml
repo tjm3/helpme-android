@@ -19,6 +19,28 @@
         android:layout_height="match_parent"
         android:layout_weight="0.02">
 
+        <ImageView
+            android:layout_marginBottom="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/helpmeapp"
+            android:id="@+id/textLogo"
+            android:layout_marginTop="67dp"
+            android:textColor="#000000"
+            android:textSize="25dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/error_message_text_view"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textLogo"
+            android:textColor="#FF0000"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:text="Error message"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,18 +48,17 @@
             android:textStyle="normal"
             android:id="@+id/lblNewUsername"
             android:layout_gravity="center_horizontal"
+
             android:layout_weight="0.02"
-            android:layout_marginTop="25dp"
             android:textSize="18dp"
             android:textColor="#000000"
-            android:layout_below="@+id/textLogo"
+            android:layout_below="@id/error_message_text_view"
             android:layout_alignRight="@+id/lblNewPassword"
             android:layout_alignEnd="@+id/lblNewPassword" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
             android:textStyle="normal"
             android:ems="10"
             android:id="@+id/txtNewUsername"
@@ -63,14 +84,15 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
+            android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/txtNewPassword"
             android:background="#e1e1e1"
             android:password="true"
             android:layout_below="@+id/lblNewPassword"
             android:layout_alignLeft="@+id/lblNewPassword"
-            android:layout_alignStart="@+id/lblNewPassword" />
+            android:layout_alignStart="@+id/lblNewPassword"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,17 +125,6 @@
             android:layout_alignTop="@+id/buttonCreateNewAc"
             android:layout_alignRight="@+id/txtNewPassword"
             android:layout_alignEnd="@+id/txtNewPassword" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/helpmeapp"
-            android:id="@+id/textLogo"
-            android:layout_marginTop="67dp"
-            android:textColor="#000000"
-            android:textSize="25dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 </LinearLayout>

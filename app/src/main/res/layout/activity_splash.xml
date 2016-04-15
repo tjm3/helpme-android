@@ -19,6 +19,10 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/txtLogo"
         />
+    <!--<WebView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loading_web_view"></WebView>-->
 
 
     <TextView

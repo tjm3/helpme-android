@@ -26,9 +26,11 @@ import android.widget.ListView;
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.security.Security;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.RunnableFuture;
 
 import retrofit2.Call;
@@ -38,6 +40,7 @@ import uk.ac.hud.tjm3.helpme.http_api.HelpRequestService;
 import uk.ac.hud.tjm3.helpme.http_api.UserSession;
 
 public class HelpRequestListActivity extends AppCompatActivity {
+    public final static DateFormat DATE_FORMAT = DateFormat.getDateTimeInstance();
     public final static String EXTRA_HELP_REQUEST_ID = "uk.ac.hud.tjm3.helpme.HELP_REQUEST_ID";
     final static String TAG = "HELP_RLIST_ACTIVITY";
     private ArrayList<String> helpRequestsList = new ArrayList<String>();
@@ -46,7 +49,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location currentLocation;
-    public static long LOCATION_REFRESH_TIME = 20000;
+    public static long LOCATION_REFRESH_TIME = 5000;
     public static float LOCATION_REFRESH_DISTANCE = 50;
     private Date nextUpdate = new Date();
     private Button refreshButton;
@@ -65,6 +68,8 @@ public class HelpRequestListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.setTitle("helpme requests");
+
+        DATE_FORMAT.setTimeZone(TimeZone.getDefault());
 
         // Basic attributes
         this.handler.postDelayed(new Runnable() {
@@ -141,14 +146,14 @@ public class HelpRequestListActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
                 Date now = new Date();
-                if(now.after(nextUpdate)) {
-                    if (location != null) {
-                        Log.d(TAG, "Location changed: " + location.toString());
-                        HelpRequestListActivity.this.currentLocation = location;
-                        HelpRequestListActivity.this.refreshHelpRequests();
-                    }
+                if (location != null) {
+                    Log.d(TAG, "Location changed: " + location.toString());
+                    HelpRequestListActivity.this.currentLocation = location;
 
-                    nextUpdate.setSeconds(nextUpdate.getSeconds() + 20);
+                    if(now.after(nextUpdate)) {
+                        HelpRequestListActivity.this.refreshHelpRequests();
+                        nextUpdate.setSeconds(nextUpdate.getSeconds() + 5);
+                    }
                 }
             }
 
@@ -183,12 +188,15 @@ public class HelpRequestListActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate on HelpRequestListActivity finished");
     }
 
-    private void refreshHelpRequests() {
+    private void refreshHelpRequests() throws NullPointerException {
         Log.d(TAG, "Refresh help requests initiated");
         this.helpRequestsList.clear();
         this.rawHelpRequestList.clear();
         this.helpRequestListAdapter.notifyDataSetChanged();
 
+        if(this.currentLocation == null) {
+           return;
+        }
 
         Call<List<HelpRequest>> call = this.service.getHelpRequestList(this.currentLocation.getLongitude(), this.currentLocation.getLatitude());
         call.enqueue(new Callback<List<HelpRequest>>() {
@@ -203,7 +211,7 @@ public class HelpRequestListActivity extends AppCompatActivity {
 
                 if (rawHelpRequestList.size() > 0) {
                     for (HelpRequest helpRequest : rawHelpRequestList) {
-                        HelpRequestListActivity.this.helpRequestsList.add(helpRequest.toString());
+                        HelpRequestListActivity.this.helpRequestsList.add(helpRequest.getTitle() + "     " + helpRequest.getLocationName() + "\n" + DATE_FORMAT.format(helpRequest.getMeetingDatetime()) + "\nby @" + helpRequest.getAuthorName());
                     }
                 } else {
                     HelpRequestListActivity.this.helpRequestsList.add("No help requests in the area :(");
@@ -215,22 +223,9 @@ public class HelpRequestListActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<HelpRequest>> call, Throwable t) {
                 t.printStackTrace();
-                HelpRequestListActivity.this.refreshHelpRequests();
+
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        this.handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                HelpRequestListActivity.this.refreshHelpRequests();
-            }
-        }, 1200);
-
     }
 
 }

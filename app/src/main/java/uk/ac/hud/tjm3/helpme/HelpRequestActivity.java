@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -149,8 +151,10 @@ public class HelpRequestActivity extends AppCompatActivity {
 
                 HelpRequestActivity.this.helpRequest = (HelpRequest) response.body();
                 HelpRequestActivity.this.setTitle(HelpRequestActivity.this.helpRequest.getTitle());
-                HelpRequestActivity.this.datetimeTextView.setText("Posted: " + HelpRequestActivity.this.helpRequest.getDatetime().toString());
-                HelpRequestActivity.this.meetingDatetimeTextView.setText("Meeting time: " + HelpRequestActivity.this.helpRequest.getMeetingDatetime().toString());
+                long now = System.currentTimeMillis();
+                CharSequence posted = DateUtils.getRelativeTimeSpanString(HelpRequestActivity.this.helpRequest.getDatetime().getTime(), now, DateUtils.MINUTE_IN_MILLIS);
+                HelpRequestActivity.this.datetimeTextView.setText("Posted: " + posted.toString());
+                HelpRequestActivity.this.meetingDatetimeTextView.setText("Meeting time: " + HelpRequestListActivity.DATE_FORMAT.format(HelpRequestActivity.this.helpRequest.getMeetingDatetime()));
                 HelpRequestActivity.this.contentTextView.setText(HelpRequestActivity.this.helpRequest.getContent());
                 HelpRequestActivity.this.authorTextView.setText("Author: " + HelpRequestActivity.this.helpRequest.getAuthorName());
                 HelpRequestActivity.this.locationTextView.setText("Location: " + HelpRequestActivity.this.helpRequest.getLocationName());
@@ -196,7 +200,7 @@ public class HelpRequestActivity extends AppCompatActivity {
             Log.d(TAG, "There're replies");
             for (HelpRequestReply reply : replies) {
                 Log.d(TAG, "Reply: " + reply.getContent());
-                this.repliesList.add(reply.getAuthorName() + "\n" + reply.getContent() + "\n" + reply.getDatetime().toString());
+                this.repliesList.add(reply.getAuthorName() + "\n" + reply.getContent() + "\n" + HelpRequestListActivity.DATE_FORMAT.format(reply.getDatetime()).toString());
             }
         } else {
             Log.d(TAG, "There's no replies");

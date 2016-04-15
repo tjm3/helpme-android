@@ -31,31 +31,6 @@ public class UserSession {
         return instance;
     }
 
-    public HelpRequestService signIn(String username, String password) {
-        final HelpRequestService helpRequestService = ServiceGenerator.createService(HelpRequestService.class, username, password);
-        Call<User> call = helpRequestService.getCurrentUser();
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (!response.isSuccess()) {
-                    throw new InvalidLoginCredentialsRuntimeException();
-                }
-
-                UserSession.this.service = helpRequestService;
-                UserSession.this.currentUser = response.body();
-                Log.d(TAG, "Logged in as: " + UserSession.this.currentUser.toString() + " - " + UserSession.this.currentUser.getUsername() + " - " + UserSession.this.currentUser.getEmail());
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException("No connection to the network or our server is not responding.");
-            }
-        });
-
-        return this.service;
-    }
-
     public boolean isAuthenticated() {
 
         Call<User> call = this.service.getCurrentUser();
@@ -92,5 +67,13 @@ public class UserSession {
     public void logout() {
         this.currentUser = null;
         this.service = ServiceGenerator.createService(HelpRequestService.class);
+    }
+
+    public void setService(HelpRequestService service) {
+        this.service = service;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 }
