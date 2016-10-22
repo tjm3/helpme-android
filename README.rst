@@ -1,5 +1,7 @@
 helpme-android (prototype)
 ==========================
+Team project for Year 1 at university.
+
 An Android application consuming a HTTP API - `link <https://github.com/tm-kn/helpme-backend/>`_.
 
 It is supposed to be a messsage board displaying messages from the local area. It's only a prototype for demonstration purposes.
